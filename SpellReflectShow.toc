@@ -1,0 +1,8 @@
+## Interface: 100005
+## Version: 1.0.0
+## Title: SpellReflectShow
+## SavedVariables: SRLog
+## Notes: Logs your reflected spells
+## Author: DrongoLightning
+
+SpellReflectShow.lua
