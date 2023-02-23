@@ -1,33 +1,36 @@
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-
---Create frame and position
-local SRSwindow = CreateFrame("Frame", "SpellReflect Show", UIParent)
+--Create frame, border and position
+--[[https://github.com/Ketho/BlizzardInterfaceResources/blob/mainline/Resources/Templates.lua
+  ["ResizeCheckButtonBehaviorTemplate"] = {type = "Frame", mixin = "ResizeCheckButtonMixin", inherits = "ResizeLayoutFrame"},
+  ["ResizeCheckButtonTemplate"] = {type = "Frame", inherits = "ResizeCheckButtonBehaviorTemplate"},
+  ["ResizeLayoutFrame"] = {type = "Frame", mixin = "ResizeLayoutMixin", inherits = "BaseLayoutFrameTemplate"},
+  /run local f = CreateFrame("Frame", nil, UIParent, "ObjectiveTrackerUIWidgetBlock"); f:SetSize(100, 100); f:SetPoint("CENTER")
+]]
+local SRSwindow = CreateFrame("Frame", "SpellReflect Show", UIParent, "BasicFrameTemplateWithInset")
 SRSwindow:SetSize(200, 100)
 SRSwindow:SetPoint("CENTER")
 
+SRSwindow:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+
 local myText = SRSwindow:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 myText:SetPoint("CENTER")
+myText:SetPoint("BOTTOMRIGHT", SRSwindow, "BOTTOMRIGHT", -5, 5)
+myText:SetText("Spell Reflection: ... test")
+myText:Show()
 
 -- Create the title text for the frame
 local title = SRSwindow:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-title:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -5)
+title:SetPoint("TOPLEFT", SRSwindow, "TOPLEFT", 5, -5)
 title:SetText("Spell Reflect Show")
-
--- create a close button to hide the frame
-local closeButton = CreateFrame("Button", nil, SRSwindow, "UIPanelCloseButton")
-closeButton:SetPoint("TOPRIGHT", SRSwindow, "TOPRIGHT", -5, -5)
 
 -- Make the frame resizable
 SRSwindow:SetResizable(true)
 
 -- Set the minimum and maximum dimensions for the frame
-SRSwindow:SetMinResize(100, 50)
-SRSwindow:SetMaxResize(800, 600)
+SRSwindow:SetResizeBounds(100, 50, 800, 600)
 
 -- Add a frame level event handler for the "OnSizeChanged" event
 SRSwindow:SetScript("OnSizeChanged", function(self, width, height)
-    myText:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -5, 5)
+    myText:SetPoint("BOTTOMRIGHT", SRSwindow, "BOTTOMRIGHT", -5, 5)
 end)
 
 -- create a slash command to show/hide the frame
