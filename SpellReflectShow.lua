@@ -4,6 +4,7 @@
   ["ResizeCheckButtonTemplate"] = {type = "Frame", inherits = "ResizeCheckButtonBehaviorTemplate"},
   ["ResizeLayoutFrame"] = {type = "Frame", mixin = "ResizeLayoutMixin", inherits = "BaseLayoutFrameTemplate"},
   /run local f = CreateFrame("Frame", nil, UIParent, "ObjectiveTrackerUIWidgetBlock"); f:SetSize(100, 100); f:SetPoint("CENTER")
+  misc_rnrredxbutton
 ]]
 local SRSwindow = CreateFrame("Frame", "SpellReflect Show", UIParent, "BasicFrameTemplateWithInset")
 SRSwindow:SetSize(200, 100)
@@ -11,8 +12,8 @@ SRSwindow:SetPoint("CENTER")
 
 -- Create child frame for move frame
 local moveArea = CreateFrame("Button", nil, SRSwindow)
-moveArea:SetPoint("TOP", SRSwindow, "TOP", 0, 0)
-moveArea:SetSize(175, 20)
+moveArea:SetPoint("TOPLEFT", SRSwindow, "TOPLEFT", 0, 0)
+moveArea:SetSize(100, 20)
 moveArea:EnableMouse(true)
 moveArea:SetScript("OnMouseDown", function()
     SRSwindow:SetMovable(true)
@@ -43,6 +44,33 @@ resizeArea:SetScript("OnDragStop", function()
 	SRSwindow.hasMoved = true
 end)
 
+-- Create child frame for clear text
+local clearTextIcon = CreateFrame("Button", nil, SRSwindow)
+clearTextIcon:SetPoint("TOPRIGHT", SRSwindow, "TOPRIGHT", -40, -4)
+clearTextIcon:SetSize(16, 16)
+clearTextIcon:EnableMouse(true)
+clearTextIcon:SetScript("OnClick", function()
+    message("click");
+end)
+-- create a texture frame
+local clearIcon = SRSwindow:CreateTexture(nil, "OVERLAY")
+clearIcon:SetTexture("Interface\\Icons\\misc_rnrredxbutton")
+clearIcon:SetSize(16, 16)
+-- position the texture frame on the child frame
+clearIcon:SetPoint("CENTER", clearTextIcon, "CENTER", 0, 0)
+-- Create a tooltip frame
+local clearIconTooltipFrame = CreateFrame("GameTooltip", "MyTooltip", UIParent, "GameTooltipTemplate")
+clearIconTooltipFrame:SetOwner(clearTextIcon, "ANCHOR_RIGHT")
+-- Set the tooltip text -- doesn't follow when dragged.
+clearTextIcon:SetScript("OnEnter", function(self)
+    clearIconTooltipFrame:SetText("Clear logs")
+    clearIconTooltipFrame:Show()
+end)
+-- Hide the tooltip frame
+clearTextIcon:SetScript("OnLeave", function(self)
+    clearIconTooltipFrame:Hide()
+end)
+
 SRSwindow:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 -- text test
@@ -71,17 +99,6 @@ SlashCmdList["SRS"] = function()
     end
 end
 
--- make the frame moveable, this disables the resize
---[[
-SRSwindow:SetMovable(true)
-SRSwindow:EnableMouse(true)
-SRSwindow:SetScript("OnMouseDown", function()
-    SRSwindow:StartMoving()
-end)
-SRSwindow:SetScript("OnMouseUp", function()
-    SRSwindow:StopMovingOrSizing()
-end)
-]]
 -- capture the spell reflect
 SRSwindow:SetScript("OnEvent", function(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
