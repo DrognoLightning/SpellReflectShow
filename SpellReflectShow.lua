@@ -10,6 +10,19 @@ local SRSwindow = CreateFrame("Frame", "SpellReflect Show", UIParent, "BasicFram
 SRSwindow:SetSize(200, 100)
 SRSwindow:SetPoint("CENTER")
 
+-- initialise text
+local myText = SRSwindow:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+myText:SetPoint("TOPLEFT", SRSwindow, "TOPLEFT", 5, -20)
+--myText:SetText("Spell Reflection: ... test")
+myText:SetText(SRlog)
+myText:Show()
+
+if not SRlog then
+    SRlog = "Go reflect some spells!"
+    myText:SetText(SRlog)
+end
+
+
 -- Create child frame for move frame
 local moveArea = CreateFrame("Button", nil, SRSwindow)
 moveArea:SetPoint("TOPLEFT", SRSwindow, "TOPLEFT", 0, 0)
@@ -50,7 +63,8 @@ clearTextIcon:SetPoint("TOPRIGHT", SRSwindow, "TOPRIGHT", -40, -4)
 clearTextIcon:SetSize(16, 16)
 clearTextIcon:EnableMouse(true)
 clearTextIcon:SetScript("OnClick", function()
-    message("click");
+    SRlog = "Cleared\nGo reflect some spells!"
+    myText:SetText(SRlog)
 end)
 -- create a texture frame
 local clearIcon = SRSwindow:CreateTexture(nil, "OVERLAY")
@@ -78,12 +92,6 @@ end)
 
 SRSwindow:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
--- text test
-local myText = SRSwindow:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-myText:SetPoint("TOPLEFT", SRSwindow, "TOPLEFT", 5, -30)
-myText:SetText("Spell Reflection: ... test")
-myText:Show()
-
 -- Create the title text for the frame
 local title = SRSwindow:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 title:SetPoint("TOPLEFT", SRSwindow, "TOPLEFT", 5, -5)
@@ -91,7 +99,7 @@ title:SetText("Spell Reflect Show")
 
 -- Add a frame level event handler for the "OnSizeChanged" event
 SRSwindow:SetScript("OnSizeChanged", function(self, width, height)
-    myText:SetPoint("TOPLEFT", SRSwindow, "TOPLEFT", 5, -20)
+    myText:SetPoint("TOPLEFT", SRSwindow, "TOPLEFT", 5, -30)
 end)
 
 -- create a slash command to show/hide the frame
@@ -109,7 +117,8 @@ SRSwindow:SetScript("OnEvent", function(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local timestamp, eventType, _, sourceGUID, sourceName, sourceFlags, _, destGUID, destName, destFlags, _, spellID, spellName, _, extraSpellID, extraSpellName = ...
         if eventType == "SPELL_CAST_SUCCESS" and sourceGUID == UnitGUID("player") and spellID == 23920 then
-            myText:SetText("Spell Reflection: "..extraSpellName) -- Display the name of the spell being reflected
+            SRlog = "Spell Reflection: "..extraSpellName
+            myText:SetText(SRlog)
             myText:Show()
         end
     end
