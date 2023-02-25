@@ -63,12 +63,17 @@ local clearIconTooltipFrame = CreateFrame("GameTooltip", "MyTooltip", UIParent, 
 clearIconTooltipFrame:SetOwner(clearTextIcon, "ANCHOR_RIGHT")
 -- Set the tooltip text -- doesn't follow when dragged.
 clearTextIcon:SetScript("OnEnter", function(self)
-    clearIconTooltipFrame:SetText("Clear logs")
-    clearIconTooltipFrame:Show()
+    if not ShowTooltipFrame then
+        clearIconTooltipFrame:SetOwner(clearTextIcon, "ANCHOR_RIGHT")
+        clearIconTooltipFrame:SetText("Clear logs")
+        clearIconTooltipFrame:Show()
+        ShowTooltipFrame = true
+    end
 end)
 -- Hide the tooltip frame
 clearTextIcon:SetScript("OnLeave", function(self)
     clearIconTooltipFrame:Hide()
+    ShowTooltipFrame = false
 end)
 
 SRSwindow:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
